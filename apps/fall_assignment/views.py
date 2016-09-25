@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect
 from django.core.urlresolvers import reverse
 #from django.db.models import Sum
-from .models import User
+#from .models import User
 from ..login_reg.models import User
 
 def index(request):
@@ -9,8 +9,8 @@ def index(request):
         # Prevent user from going to the success page if not logged in.
         return redirect(reverse('useradmin:index'))
 
-    # User is logged in. Get the current status of pokes.
+    # User is logged in.
     context = {
-        "firstName" : User.objects.get(id = request.session['userID']).alias
+        "firstName" : User.objects.get(id = request.session['userID']).first_name
     }
     return render(request, 'fall_assignment/index.html', context)

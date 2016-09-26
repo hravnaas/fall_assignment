@@ -4,13 +4,68 @@
     <meta charset="utf-8">
     <title></title>
     {% load staticfiles %}
-  <link rel="stylesheet" href="{% static 'fall_assignment/css/style.css' %}"media="screen" title="no title" charset="utf-8">
+    <link rel="stylesheet" href="{% static 'fall_assignment/css/style.css' %}"media="screen" title="no title" charset="utf-8">
   </head>
   <body>
-    <h3>Welcome, {{ firstName }}!</h3>
-    <div>
-      We are doing it!
-    </div>
     <a href="{% url 'useradmin:logout' %}">Logout</a>
+    <h3>Welcome, {{ alias }}!</h3>
+    <div>
+      <p>
+        <h5>Quotable Quotes</h5>
+      </p>
+      <div class="quotes">
+        {% for quote in quotes %}
+            <div class="quote">
+              <p>{{ quote.origin }}: {{ quote.message }}</p>
+              <p>
+                Posted by <a href="quotes/users/{{ quote.user.id }}">{{ quote.user.alias }}</a>
+                <form action="/quotes/favorite/add/{{ quote.id }}" method="post">
+                  {% csrf_token %}
+                  <input type="submit" name="submit" value="Add to My List">
+                </form>
+              </p>
+            </div>
+        {% endfor %}
+      </div>
+    </div>
+    <hr>
+    <div>
+      <p>
+        <h5>Your Favorites</h5>
+      </p>
+      <div class="favorites">
+        {% for favorite in favorites %}
+            <div class="favorite">
+              <p>{{ favorite.origin }}: {{ favorite.message }}</p>
+              <p>
+                Posted by <a href="/users/{{ favorite.user.id }}">{{ favorite.user.alias }}</a>
+                <form action="/quotes/favorite/remove/{{ favorite.id }}" method="post">
+                  {% csrf_token %}
+                  <input type="submit" name="submit" value="Remove From My List">
+                </form>
+              </p>
+            </div>
+        {% endfor %}
+      </div>
+    </div>
+    <hr>
+    <div class="addQuote">
+      <h5>Contribute a Quote</h5>
+      <form action="quote/add" method="post">
+        {% csrf_token %}
+        <p>Quoted By: <input type="text" name="Quoted By"></p>
+        <p>Message: <input type="text" name="Message"></p>
+        <input type="submit" name="submit" value="Submit">
+      </form>
+      {% if messages %}
+        <div class="errors">
+          <ul>
+            {% for message in messages %}
+              <li class="redText">{{ message }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+    </div>
   </body>
 </html>

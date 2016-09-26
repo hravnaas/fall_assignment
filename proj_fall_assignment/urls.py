@@ -17,5 +17,5 @@ from django.conf.urls import url, include
 
 urlpatterns = [
     url(r'^', include('apps.login_reg.urls', namespace='useradmin')),
-    url(r'^fall_assignment/', include('apps.fall_assignment.urls', namespace='fall_assignment'))
+    url(r'^quotes/', include('apps.fall_assignment.urls', namespace='quotes'))
 ]

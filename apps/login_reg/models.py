@@ -20,8 +20,8 @@ class UserManager(models.Manager):
             # but first check if the user already exists.
             if not len(User.objects.filter(email = data["Email"])) > 0:
                 newUser = User.objects.create(
-                    first_name = data['First Name'],
-                    last_name = data['Last Name'],
+                    name = data['Name'],
+                    alias = data['Alias'],
                     email = data['Email'],
                     password = bcrypt.hashpw(data['Password'].encode(), bcrypt.gensalt()),
                     birthday = data['Birthday']
@@ -31,12 +31,12 @@ class UserManager(models.Manager):
                 response["user"] = newUser
             else:
                 response["registered"] = False
-                response["errors"] = [ "User already exists. Login instead." ]
+                response["errors"] = [ "User already exists. Please login instead." ]
         return response
 
     def login(self, data):
         response = {}
-        badLoginMsg = "Unknown user email or bad password."
+        badLoginMsg = "Unknown email or bad password."
         existingUser = None
         try:
             existingUser = User.objects.filter(email = data['Email'])
@@ -76,11 +76,12 @@ class UserManager(models.Manager):
 
     def validateNames(self, data, errors):
         MIN_NAME_LEN = 2
-        if not data["First Name"].isalpha() or not data["Last Name"].isalpha():
-            errors.append("Only alphamumeric characters are allowed for the first and last name.")
+        #if all(c.isalpha() or c.isspace() for c in data["Name"]):
+        #if not data["Name"].isalpha() or not data["Alias"].isalpha():
+            #errors.append("Only alphamumeric characters are allowed for the name and alias.")
 
-        if len(data["First Name"]) < MIN_NAME_LEN or len(data["Last Name"]) < MIN_NAME_LEN:
-            errors.append("First and Last Names must contain at least two characters.")
+        if len(data["Name"]) < MIN_NAME_LEN or len(data["Alias"]) < MIN_NAME_LEN:
+            errors.append("Name and Alias must contain at least two characters.")
 
     def validatePasswords(self, data, errors):
         MIN_PASSWORD = 8
@@ -105,8 +106,8 @@ class UserManager(models.Manager):
 
 
 class User(models.Model):
-    first_name = models.CharField(max_length=255)
-    last_name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
+    alias = models.CharField(max_length=255)
     email = models.EmailField(max_length=255)
     password = models.CharField(max_length=255)
     birthday = models.DateField()

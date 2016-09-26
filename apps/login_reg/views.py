@@ -49,7 +49,7 @@ def success(request):
     if "userID" not in request.session:
         # Prevent user from going to the success page if not logged in.
         return redirect(reverse('useradmin:index'))
-    return redirect(reverse('fall_assignment:index'))
+    return redirect(reverse('quotes:index'))
 
 def logout(request):
     if "userID" in request.session:
